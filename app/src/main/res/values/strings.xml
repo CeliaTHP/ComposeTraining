@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ComposeTraining</string>
+
+    <!--Basics-->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="go">Let\'s go</string>
+    <string name="go_on">Continue</string>
+    <string name="cancel">Cancel </string>
+    <string name="done">Done</string>
+
+    <!--Biometrics-->
+    <string name="biometrics_explanation">You are going to access the biometric fingerprint settings.</string>
+
+</resources>
