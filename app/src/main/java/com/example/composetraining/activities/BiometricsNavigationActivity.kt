@@ -3,37 +3,40 @@ package com.example.composetraining.activities
 import android.content.Intent
 import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import android.hardware.biometrics.BiometricPrompt
-import android.hardware.biometrics.BiometricManager as HardwareBiometricManager
-
-import androidx.biometric.BiometricManager as BiometricManager
-
-import android.os.Build
 import android.os.Bundle
-import android.os.CancellationSignal
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.content.ContextCompat
 import com.example.composetraining.navigation.BiometricsNavigation
-import com.example.composetraining.utils.BiometricUtils
-import java.util.concurrent.Executors
 
 class BiometricsNavigationActivity : ComponentActivity() {
 
     companion object {
         private const val TAG = "BioNavActivity"
         private const val REQUEST_CODE = 0
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            BiometricsNavigation()
+
+            BiometricsNavigation {
+                Log.d(TAG, "onCredentialRequestRequired")
+                val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                    putExtra(
+                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                        BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+                    )
+                }
+                startActivityForResult(enrollIntent, REQUEST_CODE)
+
+            }
         }
 
+        /*
         BiometricUtils.initBiometricPrompt(this) {
             val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
                 putExtra(
@@ -44,6 +47,8 @@ class BiometricsNavigationActivity : ComponentActivity() {
             startActivityForResult(enrollIntent, REQUEST_CODE)
         }
 
+
+         */
 
     }
 

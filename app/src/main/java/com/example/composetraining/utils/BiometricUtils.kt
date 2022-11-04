@@ -14,7 +14,7 @@ object BiometricUtils {
 
     private const val TAG = "BiometricUtils"
 
-    fun initBiometricPrompt(context: Context, onCrendentialCreationNeeded: () -> Unit) {
+    fun initBiometricPrompt(context: Context, onCredentialsCreationNeeded: () -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 
             Log.d(TAG, "is >= Android 30")
@@ -38,11 +38,13 @@ object BiometricUtils {
                     ) {
                         super.onAuthenticationError(errorCode, errString)
                         //Called when credential creation is required
+                        //Force toggle to turn off if enabled on click
                         Log.d(TAG, "onAuthenticationError")
                     }
 
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
                         super.onAuthenticationSucceeded(result)
+                        //Force toggle to turn on if onclick disabled
                         Log.d(TAG, "onAuthenticationSucceeded")
 
                     }
@@ -50,6 +52,8 @@ object BiometricUtils {
                     override fun onAuthenticationFailed() {
                         super.onAuthenticationFailed()
                         Log.d(TAG, "onAuthenticationFailed")
+                        //Force toggle to turn off if enabled on click
+
 
                     }
                 })
@@ -80,7 +84,7 @@ object BiometricUtils {
                         "User should create his credentials"
                     )
 
-                    onCrendentialCreationNeeded()
+                    onCredentialsCreationNeeded()
                     //moved to callback
                     //startActivityForResult(enrollIntent, BiometricsNavigationActivity.REQUEST_CODE)
                 }

@@ -1,5 +1,6 @@
 package com.example.composetraining.navigation
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,10 +21,11 @@ import com.example.composetraining.R
 import com.example.composetraining.composables.BottomButtonComposable
 import com.example.composetraining.composables.ImageComposable
 import com.example.composetraining.composables.SwitchComposable
+import com.example.composetraining.utils.BiometricUtils
 
 
 @Composable
-fun BiometricsNavigation() {
+fun BiometricsNavigation(onCredentialsCreationNeeded: () -> Unit) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.MainScreen.route) {
         composable(route = Screen.MainScreen.route) {
@@ -34,7 +36,8 @@ fun BiometricsNavigation() {
             SecondScreen(navController)
         }
         composable(route = Screen.ThirdScreen.route) {
-            ThirdScreen(navController)
+            //Pass context ?
+            ThirdScreen(navController, LocalContext.current, onCredentialsCreationNeeded)
         }
 
     }
@@ -87,6 +90,8 @@ fun SecondScreen(
 @Composable
 fun ThirdScreen(
     navController: NavController,
+    context: Context,
+    onCredentialsCreationNeeded: () -> Unit
 ) {
 
     Row(
@@ -98,6 +103,9 @@ fun ThirdScreen(
     ) {
         SwitchComposable.SwitchWithText(name = "Biometric Fingerprint", onCheckedChange = {
             Log.d("ThirdScreen", "is now : $it")
+            if (it) {
+                BiometricUtils.initBiometricPrompt(context, onCredentialsCreationNeeded)
+            }
 
         })
     }
