@@ -1,7 +1,5 @@
 package com.example.composetraining.navigation
 
-import android.content.Context
-import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -101,8 +98,6 @@ fun ThirdScreen(
     ) {
         SwitchComposable.SwitchWithText(name = "Biometric Fingerprint", onCheckedChange = {
             Log.d("ThirdScreen", "is now : $it")
-            requestFingerPrint()
-
 
         })
     }
@@ -113,12 +108,6 @@ fun ThirdScreen(
         navController.navigate(Screen.SecondScreen.route)
 
     }
-
-
-}
-
-fun requestFingerPrint() {
-
 
 
 }
