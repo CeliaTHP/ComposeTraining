@@ -3,6 +3,7 @@ package com.example.composetraining.activities
 import android.content.Intent
 import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -25,13 +26,19 @@ class BiometricsNavigationActivity : ComponentActivity() {
 
             BiometricsNavigation {
                 Log.d(TAG, "onCredentialRequestRequired")
-                val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                    putExtra(
-                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                        BIOMETRIC_STRONG or DEVICE_CREDENTIAL
-                    )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                        putExtra(
+                            Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                            BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+                        )
+                    }
+                    startActivityForResult(enrollIntent, REQUEST_CODE)
+
+                } else {
+                    Log.d(TAG, "VERSION.SDK_INT < R")
                 }
-                startActivityForResult(enrollIntent, REQUEST_CODE)
+
 
             }
         }

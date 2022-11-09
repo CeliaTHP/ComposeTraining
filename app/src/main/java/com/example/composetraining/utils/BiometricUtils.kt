@@ -14,52 +14,14 @@ object BiometricUtils {
 
     private const val TAG = "BiometricUtils"
 
-    fun initBiometricPrompt(context: Context, onCredentialsCreationNeeded: () -> Unit) {
+    fun requestBiometrics(context: Context, onCredentialsCreationNeeded: () -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+
+            //in Activity ?
+            initBiometricsListener(context)
 
             Log.d(TAG, "is >= Android 30")
 
-
-            val biometricPrompt =
-                BiometricPrompt.Builder(context)
-                    .setTitle("Biometric login title")
-                    .setSubtitle("Biometric login subtitle rezijroezr")
-                    .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
-                    .build()
-
-            val executor = ContextCompat.getMainExecutor(context)
-
-            biometricPrompt.authenticate(
-                CancellationSignal(), executor,
-                object : BiometricPrompt.AuthenticationCallback() {
-                    override fun onAuthenticationError(
-                        errorCode: Int,
-                        errString: CharSequence?
-                    ) {
-                        super.onAuthenticationError(errorCode, errString)
-                        //Called when credential creation is required
-                        //Force toggle to turn off if enabled on click
-                        Log.d(TAG, "onAuthenticationError")
-                    }
-
-                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
-                        super.onAuthenticationSucceeded(result)
-                        //Force toggle to turn on if onclick disabled
-                        Log.d(TAG, "onAuthenticationSucceeded")
-
-                    }
-
-                    override fun onAuthenticationFailed() {
-                        super.onAuthenticationFailed()
-                        Log.d(TAG, "onAuthenticationFailed")
-                        //Force toggle to turn off if enabled on click
-
-
-                    }
-                })
-
-
-            //determine how the user authenticated
             val biometricManager = androidx.biometric.BiometricManager.from(context)
             when (biometricManager.canAuthenticate()) {
                 androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS ->
@@ -90,13 +52,65 @@ object BiometricUtils {
                 }
             }
 
+        } else {
+            Log.d(TAG, "is < Android 30")
 
         }
 
 
     }
 
+    fun initBiometricsListener(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 
+
+            val biometricPrompt =
+                BiometricPrompt.Builder(context)
+                    .setTitle("Biometric login title")
+                    .setSubtitle("Biometric login subtitle rezijroezr")
+                    .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
+                    .build()
+
+
+            val executor = ContextCompat.getMainExecutor(context)
+
+            biometricPrompt.authenticate(
+                CancellationSignal(), executor,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationError(
+                        errorCode: Int,
+                        errString: CharSequence?
+                    ) {
+                        super.onAuthenticationError(errorCode, errString)
+                        //Called when credential creation is required
+                        //Force toggle to turn off if enabled on click
+                        Log.d(TAG, "onAuthenticationError")
+                    }
+
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
+                        super.onAuthenticationSucceeded(result)
+                        //Force toggle to turn on if onclick disabled
+                        Log.d(TAG, "onAuthenticationSucceeded")
+
+                    }
+
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+                        Log.d(TAG, "onAuthenticationFailed")
+                        //Count fails to request twice
+                        //Force toggle to turn off if enabled on click
+
+
+                    }
+                })
+
+
+        } else {
+            Log.d(TAG, "is < Android R")
+        }
+
+
+    }
 }
 
 
